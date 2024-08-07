@@ -2,7 +2,7 @@ from typing import Tuple, Dict
 
 from flask import Request, Response
 
-from src.caching.CachedObject import CacheObject
+from src.classes.RequestHandler import RequestHandler
 
 
 class Helper:
@@ -55,14 +55,14 @@ class Helper:
         return ip, api_uuid
 
     @staticmethod
-    def get_object(cached_objects: Dict[str, CacheObject], request: Request) -> CacheObject | None:
+    def get_object(cached_objects: Dict[str, RequestHandler], request: Request) -> RequestHandler | None:
         ip, api_uuid = Helper.get_identifier(request)
         if cached_objects.get(ip) is not None:
             return cached_objects.get(ip)
         return None
 
     @staticmethod
-    def save_object(cached_objects: Dict[str, CacheObject], request: Request, obj: CacheObject) -> None:
+    def save_object(cached_objects: Dict[str, RequestHandler], request: Request, obj: RequestHandler) -> None:
         """
         :param cached_objects: A dictionary containing cached objects.
         :param request: The request object received.
@@ -84,7 +84,7 @@ class Helper:
 
 
     @staticmethod
-    def delete_object(cached_objects: Dict[str, CacheObject], request: Request) -> None:
+    def delete_object(cached_objects: Dict[str, RequestHandler], request: Request) -> None:
         """
         Deletes a cached object from the provided dictionary based on the given request.
 
