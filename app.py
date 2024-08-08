@@ -37,7 +37,7 @@ def start():
             ip = data.ip
 
         cache = RequestHandler(data)
-        Helper.save_object(cached_objects=in_memory_cache, request=request, obj=cache)
+        Helper.save_object(in_memory_cache, request, cache)
 
         return Response(status=200, response=str(cache.uuid))
     else:
@@ -46,7 +46,7 @@ def start():
 
 @app.route('/config/stop', methods=["GET"])
 def download():
-    cache = Helper.get_object(cached_objects=in_memory_cache, request=request)
+    cache = Helper.get_object(in_memory_cache, request)
 
     if cache is not None:
         data = send_file(
@@ -55,7 +55,7 @@ def download():
             download_name='Requests.zip'
         )
 
-        Helper.delete_object(cached_objects=in_memory_cache, request=request)
+        Helper.delete_object(in_memory_cache, request)
         return data
     else:
         return Response(status=200)
