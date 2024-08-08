@@ -17,7 +17,7 @@ class DotHttp:
             'authorization': 'token',
         }
 
-    def create_dothttp_json(self, headers: dict) -> dict:
+    def create_dothttp_json(self, headers: dict) -> dict | None:
         """
         Create HTTP environment by extracting token from headers and saving it to a JSON file.
 
@@ -34,13 +34,13 @@ class DotHttp:
                     if key.lower() in self._headers_to_variable:
                         variables.update({self._headers_to_variable.get(key.lower()): value})
 
-            if variables is not None:
+            if variables is not None and len(variables) > 0:
                 dothttp_json = {self._environment: variables}
                 return dothttp_json
             else:
-                return {}
+                return None
         else:
-            return {}
+            return None
 
     def _create_response_link(self, response_name: str | None) -> str:
         response_str = ''
@@ -95,6 +95,8 @@ class DotHttp:
                 # Only write header if it shall be written
                 if key.lower() in self._headers_to_variable or key.lower() in self._headers_to_write:
                     request += f'{key}: {value}\n'
+        if payload is not None:
+            request += f'Content-Type: application/json\n'
 
         if (params is not None and len(params) > 0 and
                 not (self._ide == Ide.INTELLIJ or self._ide == Ide.VISUAL_STUDIO)):
@@ -103,7 +105,7 @@ class DotHttp:
                 request += f'? {key} = {value}\n'
 
         if payload is not None:
-            request += f'\njson({json.dumps(payload, indent=2)})\n'
+            request += f'\n{json.dumps(payload, indent=2)}\n'
 
         return request
 

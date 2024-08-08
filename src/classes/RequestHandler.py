@@ -45,4 +45,5 @@ class RequestHandler:
 
     def create_environment(self, headers: dict):
         dothttp = self._dothttp.create_dothttp_json(headers)
-        self._file.write_env(dothttp)
+        if dothttp is not None:
+            self._file.write_env(dothttp)
