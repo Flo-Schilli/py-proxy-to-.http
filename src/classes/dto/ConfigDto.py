@@ -3,6 +3,8 @@ from typing import Optional
 
 from dataclasses_json import dataclass_json
 
+from src.enum.IdeEnum import Ide
+
 
 @dataclass_json
 @dataclass
@@ -10,10 +12,7 @@ class DotHttpConfigDto:
     environment: Optional[str] = 'Development'
     create_environment: Optional[bool] = True
     create_assert: Optional[bool] = True
-    create_response_comment: Optional[bool] = True
-    write_params_in_url: Optional[bool] = True
-    """If True, writes params within the URL. In regards to dothttp doc it should be False, but IntelliJ cannot 
-    handle it."""
+    used_ide: Optional[Ide] = field(default=Ide.INTELLIJ)
 
     def __getitem__(self, item):
         return getattr(self, item)

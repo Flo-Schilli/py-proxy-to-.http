@@ -20,12 +20,26 @@ flask run -h 0.0.0.0 -p 8080
 
 To trigger the start of a logging you have to call the endpoint `http://{HOST}:{PORT}/config/start`
 with a POST request. The application then stores all requests for the querying IP.
-You have to provide the following body: 
+You have to provide the following body:
+
+**Hint** All despide the base_url are optional
 ```json
 {
   "base_url": "{{BACKEND_URL}}",
-  "ip": "OPTIONAL IP THE REQUEST COMES FROM"
+  "ip": "IP THE REQUEST COMES FROM",
+  "dothttp": { 
+    "environment": "Development",
+    "create_environment": true,
+    "create_assert": true,
+    "used_ide": 2
+  }
 }
+```
+``used_ide`` can be one of:
+```
+VISUAL_STUDIO: 1
+INTELLIJ: 2
+VSCODE: 3
 ```
 
 To stop the logging you have to call the endpoint `http://{HOST}:{PORT}/config/stop` with stopping, you'll get a zip 

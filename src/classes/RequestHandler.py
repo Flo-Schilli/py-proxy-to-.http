@@ -12,9 +12,11 @@ class RequestHandler:
         self._remote_addr = config.ip
         self._base_url = config.base_url
         self._dothttp = DotHttp(config.dothttp)
+
         self._uuid = uuid.uuid4()
         self._storage_path = tempfile.TemporaryDirectory()
-        self._file = FileWriter(dir_name=self._storage_path.name, file_name=str(self._uuid))
+        self._request_number = 0
+        self._file = FileWriter(dir_name=self._storage_path.name, uuid=str(self._uuid))
 
     def __del__(self):
         self._storage_path.cleanup()
@@ -32,9 +34,14 @@ class RequestHandler:
         return self._storage_path
 
     def write(self, method: str, url: str, status: int, query: QueryDto, response: QueryDto):
+        self._request_number += 1
 
-        dothttp = self._dothttp.create_dothttp_for_call(method, url, status, query, response)
-        self._file.append(dothttp)
+        response_name = self._file.response_name(self._request_number)
+        dothttp = self._dothttp.create_dothttp_for_request(self._request_number, method, url, status,
+                                                           query, response_name)
+        self._file.request_append(dothttp)
+
+        self._file.create_response(self._request_number, self._dothttp.create_dothttp_for_response(status, response))
 
     def create_environment(self, headers: dict):
         dothttp = self._dothttp.create_dothttp_json(headers)
